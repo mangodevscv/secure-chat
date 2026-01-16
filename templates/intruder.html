@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕵️ Painel do Intruso - Interceptação de Mensagens</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a1a;
+    color: #00ff00;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    background: #2d2d2d;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.header h1 {
+    color: #00ff00;
+    font-size: 28px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.header p {
+    color: #00cc00;
+    font-size: 14px;
+}
+
+.controls {
+    background: #2d2d2d;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 12px 24px;
+    border: 2px solid #00ff00;
+    background: #1a1a1a;
+    color: #00ff00;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background: #00ff00;
+    color: #1a1a1a;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.stats {
+    background: #2d2d2d;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.stats h2 {
+    color: #00ff00;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.stat-box {
+    background: #1a1a1a;
+    border: 1px solid #00ff00;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.stat-box .number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #00ff00;
+    margin-bottom: 5px;
+}
+
+.stat-box .label {
+    font-size: 12px;
+    color: #00cc00;
+}
+
+.messages {
+    background: #2d2d2d;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.messages h2 {
+    color: #00ff00;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.message-card {
+    background: #1a1a1a;
+    border: 1px solid #00ff00;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #00ff00;
+}
+
+.message-route {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.message-time {
+    color: #00cc00;
+    font-size: 11px;
+}
+
+.message-data {
+    margin-top: 10px;
+}
+
+.message-data .label {
+    color: #00cc00;
+    font-weight: bold;
+    margin-top: 8px;
+    display: block;
+}
+
+.message-data .value {
+    color: #00ff00;
+    word-break: break-all;
+    margin-left: 10px;
+    display: block;
+    margin-top: 4px;
+}
+
+.warning-box {
+    background: #2d0000;
+    border: 2px solid #ff0000;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #ff6666;
+}
+
+.warning-box h3 {
+    color: #ff0000;
+    margin-bottom: 10px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #00cc00;
+}
+
+.empty-state .icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.home-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #00ff00;
+    text-decoration: none;
+    font-weight: 600;
+    border: 2px solid #00ff00;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+.home-link:hover {
+    background: #00ff00;
+    color: #1a1a1a;
+}
+
+.filter-section {
+    background: #2d2d2d;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.filter-section h2 {
+    color: #00ff00;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+select, input {
+    background: #1a1a1a;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    margin-right: 10px;
+}
+
+.badge {
+    background: #00ff00;
+    color: #1a1a1a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.signature-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.sig-present {
+    background: #00ff00;
+    color: #1a1a1a;
+}
+
+.sig-absent {
+    background: #ff6600;
+    color: #1a1a1a;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/" class="home-link">← Voltar ao Sistema</a>
+    
+    <div class="header">
+        <h1>🕵️ PAINEL DO INTRUSO</h1>
+        <p>Sistema de Interceptação de Mensagens Cifradas</p>
+    </div>
+
+    <div class="warning-box">
+        <h3>⚠️ AVISO DE SEGURANÇA</h3>
+        <p>Este painel demonstra como um atacante pode interceptar o tráfego de rede. No entanto, graças à criptografia moderna:</p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+            <li>✓ As mensagens estão cifradas com AES-256-GCM</li>
+            <li>✓ Sem a chave de sessão, são ilegíveis</li>
+            <li>✓ Assinaturas digitais garantem autenticidade</li>
+            <li>✓ A integridade é verificada automaticamente</li>
+        </ul>
+    </div>
+
+    <div class="stats">
+        <h2>📊 Estatísticas de Interceptação</h2>
+        <div class="stat-grid">
+            <div class="stat-box">
+                <div class="number" id="total-intercepted">0</div>
+                <div class="label">Total Interceptado</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="with-signature">0</div>
+                <div class="label">Com Assinatura</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="unique-pairs">0</div>
+                <div class="label">Pares Únicos</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="atualizar()">🔄 Atualizar</button>
+        <button onclick="limpar()">🗑️ Limpar Logs</button>
+        <button onclick="toggleAutoRefresh()">
+            <span id="auto-refresh-text">▶️ Auto-Refresh: OFF</span>
+        </button>
+    </div>
+
+    <div class="filter-section">
+        <h2>🔍 Filtros</h2>
+        <select id="filter-from" onchange="aplicarFiltros()">
+            <option value="">Todos os Remetentes</option>
+        </select>
+        <select id="filter-to" onchange="aplicarFiltros()">
+            <option value="">Todos os Destinatários</option>
+        </select>
+        <button onclick="limparFiltros()">✕ Limpar Filtros</button>
+    </div>
+
+    <div class="messages">
+        <h2>📡 Mensagens Interceptadas</h2>
+        <div id="logs"></div>
+    </div>
+</div>
+
+<script>
+let autoRefresh = false;
+let refreshInterval = null;
+let allLogs = [];
+
+// Atualizar logs
+async function atualizar() {
+    try {
+        const r = await fetch("/intruder/logs");
+        const data = await r.json();
+        allLogs = data.logs || [];
+        
+        atualizarFiltros();
+        aplicarFiltros();
+        atualizarStats();
+    } catch (e) {
+        console.error("Erro ao carregar logs:", e);
+    }
+}
+
+// Aplicar filtros
+function aplicarFiltros() {
+    const filterFrom = document.getElementById("filter-from").value;
+    const filterTo = document.getElementById("filter-to").value;
+    
+    let filtered = allLogs;
+    
+    if (filterFrom) {
+        filtered = filtered.filter(log => log.from === filterFrom);
+    }
+    
+    if (filterTo) {
+        filtered = filtered.filter(log => log.to === filterTo);
+    }
+    
+    exibirLogs(filtered);
+}
+
+// Limpar filtros
+function limparFiltros() {
+    document.getElementById("filter-from").value = "";
+    document.getElementById("filter-to").value = "";
+    aplicarFiltros();
+}
+
+// Atualizar opções de filtro
+function atualizarFiltros() {
+    const froms = new Set(allLogs.map(log => log.from));
+    const tos = new Set(allLogs.map(log => log.to));
+    
+    const filterFrom = document.getElementById("filter-from");
+    const filterTo = document.getElementById("filter-to");
+    
+    const currentFrom = filterFrom.value;
+    const currentTo = filterTo.value;
+    
+    filterFrom.innerHTML = '<option value="">Todos os Remetentes</option>';
+    filterTo.innerHTML = '<option value="">Todos os Destinatários</option>';
+    
+    froms.forEach(from => {
+        const opt = document.createElement("option");
+        opt.value = from;
+        opt.textContent = `👤 ${from}`;
+        filterFrom.appendChild(opt);
+    });
+    
+    tos.forEach(to => {
+        const opt = document.createElement("option");
+        opt.value = to;
+        opt.textContent = `👤 ${to}`;
+        filterTo.appendChild(opt);
+    });
+    
+    filterFrom.value = currentFrom;
+    filterTo.value = currentTo;
+}
+
+// Exibir logs
+function exibirLogs(logs) {
+    const container = document.getElementById("logs");
+    
+    if (!logs || logs.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="icon">📭</div>
+                <p>Nenhuma mensagem interceptada ainda</p>
+                <p style="font-size: 12px; margin-top: 10px;">As mensagens aparecerão aqui quando forem enviadas</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Ordenar por timestamp (mais recentes primeiro)
+    logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    container.innerHTML = logs.map((log, index) => {
+        const hasSignature = log.signature && log.signature !== 'null';
+        const sigBadge = hasSignature 
+            ? '<span class="signature-status sig-present">✍️ ASSINADO</span>'
+            : '<span class="signature-status sig-absent">⚠️ SEM ASSINATURA</span>';
+        
+        return `
+            <div class="message-card">
+                <div class="message-header">
+                    <div class="message-route">
+                        📤 ${log.from} → 📥 ${log.to}
+                        <span class="badge">#${logs.length - index}</span>
+                        ${sigBadge}
+                    </div>
+                    <div class="message-time">
+                        ⏰ ${new Date(log.timestamp).toLocaleString('pt-PT')}
+                    </div>
+                </div>
+                
+                <div class="message-data">
+                    <span class="label">🔐 NONCE (12 bytes):</span>
+                    <span class="value">${log.nonce}</span>
+                    
+                    <span class="label">🔒 CIPHERTEXT (AES-256-GCM):</span>
+                    <span class="value">${log.cipher}</span>
+                    
+                    ${hasSignature ? `
+                        <span class="label">✍️ ASSINATURA DIGITAL (ECDSA-SHA256):</span>
+                        <span class="value">${log.signature}</span>
+                    ` : ''}
+                    
+                    <span class="label">📝 NOTA:</span>
+                    <span class="value" style="color: #ff6666;">
+                        ⚠️ Mensagem interceptada mas ILEGÍVEL sem a chave de sessão derivada via ECDH
+                    </span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Atualizar estatísticas
+function atualizarStats() {
+    const total = allLogs.length;
+    const withSig = allLogs.filter(log => log.signature && log.signature !== 'null').length;
+    
+    const pairs = new Set();
+    allLogs.forEach(log => {
+        pairs.add(`${log.from}-${log.to}`);
+    });
+    
+    document.getElementById("total-intercepted").textContent = total;
+    document.getElementById("with-signature").textContent = withSig;
+    document.getElementById("unique-pairs").textContent = pairs.size;
+}
+
+// Limpar logs
+async function limpar() {
+    if (!confirm("Tem certeza que deseja limpar todos os logs interceptados?")) {
+        return;
+    }
+    
+    try {
+        await fetch("/intruder/clear", { method: "POST" });
+        allLogs = [];
+        aplicarFiltros();
+        atualizarStats();
+        atualizarFiltros();
+    } catch (e) {
+        alert("Erro ao limpar logs");
+    }
+}
+
+// Toggle auto-refresh
+function toggleAutoRefresh() {
+    autoRefresh = !autoRefresh;
+    const btn = document.getElementById("auto-refresh-text");
+    
+    if (autoRefresh) {
+        btn.textContent = "⏸️ Auto-Refresh: ON";
+        refreshInterval = setInterval(atualizar, 3000);
+    } else {
+        btn.textContent = "▶️ Auto-Refresh: OFF";
+        if (refreshInterval) {
+            clearInterval(refreshInterval);
+            refreshInterval = null;
+        }
+    }
+}
+
+// Inicialização
+atualizar();
+
+// Limpar interval ao sair
+window.addEventListener('beforeunload', () => {
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+    }
+});
+</script>
+
+</body>
+</html>

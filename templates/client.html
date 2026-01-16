@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cliente {{ cid }} - Sistema de Mensagens Seguras</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+h2 { 
+    color: #667eea;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 10px;
+}
+
+.section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.section h3 {
+    color: #495057;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+textarea, select, input { 
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+textarea:focus, select:focus, input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+button { 
+    padding: 12px 20px;
+    width: 100%;
+    margin-top: 8px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+pre { 
+    background: #1e1e1e;
+    color: #00ff00;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.info-box {
+    background: #e7f3ff;
+    border: 1px solid #b8daff;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #004085;
+}
+
+.home-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.home-link:hover {
+    text-decoration: underline;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 600px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilos adicionais específicos para este template */
+.status-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #dee2e6;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+}
+
+.status-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.status-value {
+    font-weight: bold;
+}
+
+.status-valid {
+    color: #28a745;
+}
+
+.status-invalid {
+    color: #dc3545;
+}
+
+.status-warning {
+    color: #ffc107;
+}
+
+.key-display {
+    background: #1e1e1e;
+    color: #00ff00;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/" class="home-link">← Voltar ao Início</a>
+    
+    <h2>👤 Cliente: {{ cid }}</h2>
+
+    <!-- Nova seção: Status do Cliente -->
+    <div class="status-section">
+        <h3>📊 Estado Atual</h3>
+        <div id="client-status">
+            <div class="status-item">
+                <span class="status-label">🔑 Chaves Geradas:</span>
+                <span class="status-value" id="keys-status">Verificando...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">📤 Publicado na AR:</span>
+                <span class="status-value" id="published-status">Verificando...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">⏰ Último Acesso:</span>
+                <span class="status-value" id="access-time">Carregando...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>🔐 1. Configuração de Chaves</h3>
+        
+        <!-- Mostra apenas se não tem chaves -->
+        <div id="no-keys-section" style="display: none;">
+            <button class="btn-primary" onclick="gerar()">🔑 Gerar Par de Chaves (ECC)</button>
+            <div class="info-box">
+                <strong>Informação:</strong> Gere primeiro o par de chaves (privada/pública).
+            </div>
+        </div>
+        
+        <!-- Mostra apenas se tem chaves mas não publicou -->
+        <div id="has-keys-section" style="display: none;">
+            <button class="btn-success" onclick="publicar()">📤 Publicar Chave Pública na AR</button>
+            <div class="info-box">
+                <strong>Informação:</strong> Suas chaves foram geradas. Publique a chave pública para outros clientes poderem se conectar.
+            </div>
+        </div>
+        
+        <!-- Mostra apenas se já publicou -->
+        <div id="published-section" style="display: none;">
+            <div class="info-box">
+                <strong>✅ Configuração Completa</strong>
+                <p>Sua chave pública está publicada na Autoridade de Registo (AR). Outros clientes podem agora solicitar sua chave.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>🔍 2. Solicitar Chave Pública</h3>
+        <label>Selecione cliente para solicitar chave:</label>
+        <select id="peer-select"></select>
+        <button class="btn-info" onclick="solicitarChave()">📥 Solicitar Chave Pública</button>
+        
+        <div id="key-display" style="display: none; margin-top: 15px;">
+            <h4>🔑 Chave Pública Recebida:</h4>
+            <div class="key-display" id="received-key"></div>
+            <button class="btn-success" onclick="derivar()" style="margin-top: 10px;">🤝 Derivar Chave de Sessão</button>
+        </div>
+        
+        <div class="info-box">
+            <strong>Fluxo Correto:</strong> Primeiro solicite a chave pública do destinatário, depois derive a chave de sessão.
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>🔄 3. Verificar/Rotar Sessão</h3>
+        <button class="btn-secondary" onclick="verificarSessao()">🔍 Verificar Validade da Sessão</button>
+        <button class="btn-secondary" onclick="rotarChave()">🔄 Rotar Chave de Sessão</button>
+        
+        <div id="session-status" style="margin-top: 10px;"></div>
+    </div>
+
+    <div class="section">
+        <h3>💬 4. Comunicação Segura</h3>
+        <label>Mensagem:</label>
+        <textarea id="msg" placeholder="Digite sua mensagem aqui..."></textarea>
+        
+        <div class="grid-2">
+            <button class="btn-success" onclick="enviar()">📤 Enviar Mensagem</button>
+            <button class="btn-info" onclick="receber()">📥 Receber Mensagem</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>📊 Saída do Sistema</h3>
+        <pre id="out">Aguardando ação...</pre>
+    </div>
+</div>
+
+<script>
+const cid = "{{ cid }}";
+let selectedPeer = "";
+
+// Funções auxiliares HTTP
+async function get(url) {
+    try {
+        const r = await fetch(url);
+        return await r.json();
+    } catch (e) {
+        out(`❌ Erro: ${e.message}`);
+        return null;
+    }
+}
+
+async function post(url, body = {}) {
+    try {
+        const r = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        return await r.json();
+    } catch (e) {
+        out(`❌ Erro: ${e.message}`);
+        return null;
+    }
+}
+
+// Verificar estado do cliente
+async function verificarEstado() {
+    const d = await get(`/clients/list`);
+    if (d && d.clients) {
+        const clientInfo = d.clients.find(c => c.id === cid);
+        if (clientInfo) {
+            // Atualizar status
+            document.getElementById("keys-status").textContent = 
+                clientInfo.has_keys ? "✅ Sim" : "❌ Não";
+            document.getElementById("published-status").textContent = 
+                clientInfo.published ? "✅ Sim" : "❌ Não";
+            
+            // Mostrar/ocultar seções apropriadas
+            if (!clientInfo.has_keys) {
+                document.getElementById("no-keys-section").style.display = "block";
+                document.getElementById("has-keys-section").style.display = "none";
+                document.getElementById("published-section").style.display = "none";
+            } else if (!clientInfo.published) {
+                document.getElementById("no-keys-section").style.display = "none";
+                document.getElementById("has-keys-section").style.display = "block";
+                document.getElementById("published-section").style.display = "none";
+            } else {
+                document.getElementById("no-keys-section").style.display = "none";
+                document.getElementById("has-keys-section").style.display = "none";
+                document.getElementById("published-section").style.display = "block";
+            }
+        }
+    }
+}
+
+// 1. Gerar chaves
+async function gerar() {
+    out("⏳ Gerando par de chaves ECC (SECP256R1)...");
+    const d = await post(`/client/${cid}/generate`);
+    if (d && d.status) {
+        out(`✅ ${d.status}
+        
+📝 Algoritmo: Elliptic Curve Cryptography
+📐 Curva: SECP256R1 (P-256)
+🔐 Chave privada: Mantida localmente
+🔑 Chave pública: Pronta para publicação
+⏰ Gerado em: ${new Date(d.keys_generated_at).toLocaleString()}`);
+        await verificarEstado();
+    } else if (d && d.error) {
+        out(`❌ ${d.error}`);
+    }
+}
+
+// 2. Publicar chave pública
+async function publicar() {
+    out("⏳ Publicando chave pública na Autoridade de Registo...");
+    const d = await post(`/client/${cid}/publish`);
+    if (d && d.status) {
+        out(`✅ ${d.status}
+        
+🏛️ Chave registada na AR (Autoridade de Registo)
+🔑 Chave pública: ${d.public_key}
+⏰ Timestamp: ${new Date().toLocaleString()}`);
+        await verificarEstado();
+        await carregarPeers();
+    } else if (d && d.error) {
+        out(`❌ ${d.error}`);
+    }
+}
+
+// Solicitar chave pública
+async function solicitarChave() {
+    const peerSelect = document.getElementById("peer-select");
+    const peer = peerSelect.value;
+    
+    if (!peer) {
+        out("⚠️ Selecione um cliente");
+        return;
+    }
+    
+    selectedPeer = peer;
+    out(`⏳ Solicitando chave pública de ${peer}...`);
+    
+    const d = await get(`/client/${cid}/request_key/${peer}`);
+    if (d && d.public_key) {
+        // Mostrar chave recebida
+        document.getElementById("key-display").style.display = "block";
+        document.getElementById("received-key").textContent = d.public_key;
+        
+        out(`✅ Chave pública recebida de ${peer}
+        
+👤 Remetente: ${d.peer}
+🔑 Chave Pública (PEM):
+${d.public_key}
+⏰ Registado em: ${new Date(d.registered_at).toLocaleString()}
+
+✅ Agora você pode derivar a chave de sessão.`);
+    } else if (d && d.error) {
+        out(`❌ ${d.error}`);
+    }
+}
+
+// 3. Derivar chave de sessão
+async function derivar() {
+    if (!selectedPeer) {
+        out("⚠️ Primeiro solicite uma chave pública");
+        return;
+    }
+    
+    out(`⏳ Derivando chave de sessão com ${selectedPeer}...`);
+    const d = await post(`/client/${cid}/derive/${selectedPeer}`);
+    if (d && d.status) {
+        out(`✅ ${d.status}
+
+🔐 Protocolo: ECDH (Elliptic Curve Diffie-Hellman)
+🔑 KDF: HKDF-SHA256
+🎯 Resultado: Chave AES-256 partilhada
+⏰ Gerada em: ${new Date(d.key_generated).toLocaleString()}
+🔒 Segurança: Forward Secrecy garantida`);
+        
+        // Esconder display da chave
+        document.getElementById("key-display").style.display = "none";
+    } else if (d && d.error) {
+        out(`❌ ${d.error}`);
+    }
+}
+
+// Verificar validade da sessão
+async function verificarSessao() {
+    if (!selectedPeer) {
+        out("⚠️ Selecione um peer primeiro");
+        return;
+    }
+    
+    const d = await get(`/session/check/${cid}/${selectedPeer}`);
+    const statusDiv = document.getElementById("session-status");
+    
+    if (d && d.valid) {
+        statusDiv.innerHTML = `
+            <div class="status-item">
+                <span class="status-label">Estado:</span>
+                <span class="status-value status-valid">✅ VÁLIDA</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Gerada em:</span>
+                <span class="status-value">${new Date(d.generated_at).toLocaleString()}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Válida até:</span>
+                <span class="status-value">${new Date(d.valid_until).toLocaleString()}</span>
+            </div>
+        `;
+        out("✅ Sessão válida e ativa");
+    } else {
+        statusDiv.innerHTML = `
+            <div class="status-item">
+                <span class="status-label">Estado:</span>
+                <span class="status-value status-invalid">❌ EXPIRADA/NÃO EXISTE</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Ação:</span>
+                <span class="status-value status-warning">Derive nova chave de sessão</span>
+            </div>
+        `;
+        out("⚠️ Sessão expirada ou não existe. Derive nova chave.");
+    }
+}
+
+// 4. Rotar chave de sessão
+async function rotarChave() {
+    if (!selectedPeer) {
+        out("⚠️ Selecione um peer primeiro");
+        return;
+    }
+    
+    out(`⏳ Rotando chave de sessão com ${selectedPeer}...`);
+    const d = await post(`/session/rotate/${cid}/${selectedPeer}`);
+    
+    if (d && d.status) {
+        out(`✅ ${d.status}
+
+🔄 Nova chave de sessão derivada
+🔐 Protocolo: ECDH + HKDF-SHA256
+🎯 Benefício: Forward Secrecy renovada
+⏰ Rotacionada em: ${new Date(d.rotated_at).toLocaleString()}`);
+        
+        // Atualizar status
+        await verificarSessao();
+    } else if (d && d.error) {
+        out(`❌ ${d.error}`);
+    }
+}
+
+// 5. Enviar mensagem (atualizado para verificar sessão)
+async function enviar() {
+    if (!selectedPeer) {
+        out("⚠️ Selecione um destinatário primeiro");
+        return;
+    }
+    
+    const msg = document.getElementById("msg").value.trim();
+    
+    if (!msg) {
+        out("⚠️ Digite uma mensagem");
+        return;
+    }
+    
+    // Verificar se a sessão é válida
+    const sessionCheck = await get(`/session/check/${cid}/${selectedPeer}`);
+    if (!sessionCheck || !sessionCheck.valid) {
+        out("❌ Sessão expirada ou não existe. Derive nova chave de sessão antes de enviar mensagens.");
+        return;
+    }
+    
+    out(`⏳ Enviando mensagem para ${selectedPeer}...`);
+    const d = await post("/send", { from: cid, to: selectedPeer, msg });
+    
+    if (d && d.cipher) {
+        out(`✅ Mensagem enviada com sucesso!
+        
+📤 Remetente: ${cid}
+📥 Destinatário: ${selectedPeer}
+📝 Mensagem original: "${msg}"
+
+🔐 CIFRA (AES-256-GCM):
+${d.cipher.substring(0, 100)}...
+
+✍️ ASSINATURA DIGITAL (ECDSA-SHA256):
+${d.signature ? d.signature.substring(0, 100) + '...' : 'N/A'}
+
+⏰ Timestamp: ${new Date().toLocaleString()}
+🔒 Confidencialidade: ✓
+🔏 Integridade: ✓
+✍️ Autenticidade: ${d.signature ? '✓' : '✗'}`);
+        
+        document.getElementById("msg").value = "";
+    } else if (d && d.error) {
+        out(`❌ ${d.error}`);
+    }
+}
+
+// 6. Receber mensagem (mantida igual)
+async function receber() {
+    out("⏳ Verificando mensagens...");
+    const d = await get(`/receive/${cid}`);
+    
+    if (d && d.clear) {
+        const sigStatus = d.signature_valid ? '✅ VÁLIDA' : '❌ INVÁLIDA';
+        const sigColor = d.signature_valid ? '🟢' : '🔴';
+        
+        out(`📨 Nova mensagem recebida!
+        
+📤 Remetente: ${d.from}
+📥 Destinatário: ${cid}
+
+🔐 MENSAGEM CIFRADA:
+${d.cipher.substring(0, 100)}...
+
+🔓 MENSAGEM DECIFRADA:
+"${d.clear}"
+
+✍️ ASSINATURA DIGITAL: ${sigColor} ${sigStatus}
+⏰ Timestamp: ${d.timestamp}
+
+🔒 Confidencialidade: ✓
+🔏 Integridade: ✓
+✍️ Autenticidade: ${d.signature_valid ? '✓' : '✗'}
+🛡️ Não-repúdio: ${d.signature_valid ? '✓' : '✗'}`);
+    } else if (d && d.status) {
+        out(`ℹ️ ${d.status}`);
+    } else if (d && d.error) {
+        out(`❌ ${d.error}`);
+    }
+}
+
+// Carregar lista de peers
+async function carregarPeers() {
+    const d = await get("/directory/list");
+    if (d && d.clients) {
+        const sel = document.getElementById("peer-select");
+        sel.innerHTML = '<option value="">Selecione um cliente...</option>';
+        
+        d.clients.filter(c => c !== cid).forEach(c => {
+            let o = document.createElement("option");
+            o.value = c;
+            o.text = `👤 ${c} (registado)`;
+            sel.appendChild(o);
+        });
+        
+        if (d.clients.filter(c => c !== cid).length === 0) {
+            sel.innerHTML = '<option value="">Nenhum outro cliente registado</option>';
+        }
+    }
+}
+
+// Atualizar tempo de acesso
+function atualizarTempoAcesso() {
+    document.getElementById("access-time").textContent = new Date().toLocaleString();
+}
+
+// Função para exibir saída
+function out(t) {
+    document.getElementById("out").textContent = t;
+}
+
+// Inicialização
+verificarEstado();
+carregarPeers();
+atualizarTempoAcesso();
+setInterval(atualizarTempoAcesso, 60000); // Atualizar a cada minuto
+
+out(`👤 Cliente ${cid} autenticado com sucesso
+⏰ ${new Date().toLocaleString()}
+
+💡 Fluxo Correto:
+1. Gere chaves (se ainda não tiver)
+2. Publique chave pública na AR
+3. Solicite chave pública do destinatário
+4. Derive chave de sessão
+5. Verifique validade da sessão
+6. Troque mensagens cifradas`);
+</script>
+
+</body>
+</html>

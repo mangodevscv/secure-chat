@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acesso Cliente {{ cid }} - Sistema de Mensagens Seguras</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 400px;
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+h2 { 
+    color: #667eea;
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+.client-id {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #495057;
+    border-left: 4px solid #667eea;
+}
+
+.info-box {
+    background: #e7f3ff;
+    border: 1px solid #b8daff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 14px;
+    color: #004085;
+}
+
+.info-box ul {
+    margin: 10px 0 10px 20px;
+}
+
+.info-box li {
+    margin: 5px 0;
+}
+
+input { 
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 20px 0;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+button { 
+    width: 100%;
+    padding: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.home-link {
+    display: block;
+    margin-top: 20px;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.home-link:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: #dc3545;
+    margin: 10px 0;
+    font-size: 14px;
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>🔐 Autenticação</h2>
+    
+    <div class="client-id">
+        👤 Cliente: {{ cid }}
+    </div>
+    
+    <div class="info-box">
+        <strong>⚠️ Acesso Protegido</strong>
+        <p>Este cliente está protegido por PIN. Por favor, insira o PIN definido durante a criação do cliente.</p>
+        <ul>
+            <li>O PIN é armazenado como hash SHA-256</li>
+            <li>Nunca é transmitido em texto claro</li>
+            <li>É necessário para acessar as chaves privadas</li>
+        </ul>
+    </div>
+    
+    <form method="POST" action="/client/{{ cid }}" onsubmit="return validateForm()">
+        <label for="pin">PIN de 4 ou mais dígitos:</label>
+        <input type="password" id="pin" name="pin" placeholder="Digite seu PIN" minlength="4" required>
+        
+        <div id="error-message" class="error"></div>
+        
+        <button type="submit">🔓 Acessar Cliente</button>
+    </form>
+    
+    <a href="/" class="home-link">← Voltar ao Início</a>
+</div>
+
+<script>
+function validateForm() {
+    const pin = document.getElementById("pin").value;
+    const error = document.getElementById("error-message");
+    
+    // Limpa mensagem de erro
+    error.style.display = "none";
+    
+    // Validação básica
+    if (pin.length < 4) {
+        error.textContent = "⚠️ PIN deve ter pelo menos 4 dígitos";
+        error.style.display = "block";
+        return false;
+    }
+    
+    if (!/^\d+$/.test(pin)) {
+        error.textContent = "⚠️ PIN deve conter apenas números";
+        error.style.display = "block";
+        return false;
+    }
+    
+    return true;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Mensagens Seguras - ҜЯIPTΘGЯΛFIA MΘDΞЯNΛ</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.header {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.header h1 {
+    color: #667eea;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 22px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+
+input, button { 
+    padding: 12px;
+    margin-top: 8px;
+    width: 100%;
+    border-radius: 6px;
+    border: 2px solid #dee2e6;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+button { 
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.client-list {
+    list-style: none;
+    padding: 0;
+}
+
+.client-list li {
+    background: #f8f9fa;
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s;
+}
+
+.client-list li:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.client-list a {
+    text-decoration: none;
+    color: #495057;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.client-list a:hover {
+    color: #667eea;
+}
+
+.badge {
+    background: #667eea;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.info-section {
+    background: #e7f3ff;
+    border: 1px solid #b8daff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.info-section h3 {
+    color: #004085;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.info-section ul {
+    color: #004085;
+    margin-left: 20px;
+}
+
+.info-section li {
+    margin: 5px 0;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.stat-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat-box .number {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stat-box .label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.empty-state .icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🔐 ҜЯIPTΘGЯΛFIA MΘDΞЯNΛ</h1>
+        <p>Sistema de Mensagens Seguras com Criptografia de Ponta</p>
+    </div>
+
+    <div class="card">
+        <h2>📊 Estatísticas do Sistema</h2>
+        <div class="stats" id="stats">
+            <div class="stat-box">
+                <div class="number" id="stat-clients">0</div>
+                <div class="label">Clientes Registados</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="stat-sessions">0</div>
+                <div class="label">Sessões Ativas</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="stat-messages">0</div>
+                <div class="label">Mensagens em Trânsito</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="stat-intercepted">0</div>
+                <div class="label">Mensagens Interceptadas</div>
+            </div>
+        </div>
+    </div>
+
+  <div class="card">
+    <h2>➕ Criar Novo Cliente</h2>
+    <input id="cid" type="text" placeholder="ID do cliente (ex: alice, bob, carlos)">
+    <input id="pin" type="password" placeholder="PIN (mínimo 4 dígitos)" style="margin-top: 10px;">
+    <button class="btn-primary" onclick="criar()">Criar Cliente</button>
+    
+    <div class="info-section">
+        <h3>ℹ️ Segurança do PIN:</h3>
+        <ul>
+            <li>O PIN é armazenado como hash SHA-256</li>
+            <li>Nunca é armazenado em texto claro</li>
+            <li>É necessário para acessar o cliente</li>
+            <li>Recomendado: Use pelo menos 6 dígitos</li>
+        </ul>
+    </div>
+</div>
+
+    <div class="card">
+        <h2>📂 Clientes Registados na AR</h2>
+        <ul id="lista" class="client-list"></ul>
+        <div id="empty-state" class="empty-state" style="display:none;">
+            <div class="icon">📭</div>
+            <p>Nenhum cliente registado ainda</p>
+            <p style="font-size: 14px; margin-top: 10px;">Crie um cliente acima para começar</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🕵️ Ferramentas de Segurança</h2>
+        <a href="/intruder">
+            <button class="btn-secondary">🔍 Abrir Painel do Intruso</button>
+        </a>
+        <div class="info-section" style="margin-top: 15px;">
+            <h3>⚠️ Sobre o Intruso:</h3>
+            <ul>
+                <li>Intercepta todas as mensagens trocadas</li>
+                <li>Demonstra importância da criptografia</li>
+                <li>Mostra dados cifrados (ilegíveis sem a chave)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🔐 Primitivas Criptográficas Utilizadas</h2>
+        <div class="info-section">
+            <ul>
+                <li><strong>Cifra Assimétrica:</strong> ECC (Elliptic Curve Cryptography) - SECP256R1</li>
+                <li><strong>Troca de Chaves:</strong> ECDH (Elliptic Curve Diffie-Hellman)</li>
+                <li><strong>Derivação de Chaves:</strong> HKDF-SHA256</li>
+                <li><strong>Cifra Simétrica:</strong> AES-256-GCM (Authenticated Encryption)</li>
+                <li><strong>Assinatura Digital:</strong> ECDSA-SHA256</li>
+                <li><strong>Hash:</strong> SHA-256</li>
+            </ul>
+        </div>
+    </div>
+    <!-- No card "Criar Novo Cliente" -->
+
+</div>
+
+
+<script>
+// Funções auxiliares
+async function post(url, body) {
+    try {
+        const r = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        return await r.json();
+    } catch (e) {
+        alert(`Erro: ${e.message}`);
+        return null;
+    }
+}
+
+async function get(url) {
+    try {
+        const r = await fetch(url);
+        return await r.json();
+    } catch (e) {
+        console.error(`Erro: ${e.message}`);
+        return null;
+    }
+}
+
+// Criar cliente
+async function criar() {
+    const cid = document.getElementById("cid").value.trim();
+    const pin = document.getElementById("pin").value.trim();
+    
+    if (!cid) {
+        alert("⚠️ Por favor, informe o ID do cliente");
+        return;
+    }
+    
+    if (!pin || pin.length < 4) {
+        alert("⚠️ PIN deve ter pelo menos 4 dígitos");
+        return;
+    }
+    
+    // Validação básica
+    if (!/^[a-z0-9_-]+$/i.test(cid)) {
+        alert("⚠️ Use apenas letras, números, _ ou -");
+        return;
+    }
+    
+    if (!/^\d+$/.test(pin)) {
+        alert("⚠️ PIN deve conter apenas números");
+        return;
+    }
+    
+    const d = await post("/client/create", { id: cid, pin: pin });
+    
+    if (d) {
+        if (d.status) {
+            alert(`✅ ${d.status}\n\nGuarde seu PIN! Será necessário para acessar o cliente.`);
+            document.getElementById("cid").value = "";
+            document.getElementById("pin").value = "";
+            carregar();
+            carregarStats();
+        } else if (d.error) {
+            alert(`❌ ${d.error}`);
+        }
+    }
+}
+
+// Carregar lista de clientes
+async function carregar() {
+    const d = await get("/directory/list");
+    
+    if (d && d.clients) {
+        const ul = document.getElementById("lista");
+        const empty = document.getElementById("empty-state");
+        
+        if (d.clients.length === 0) {
+            ul.style.display = "none";
+            empty.style.display = "block";
+        } else {
+            ul.style.display = "block";
+            empty.style.display = "none";
+            ul.innerHTML = "";
+            
+            d.clients.forEach(c => {
+                let li = document.createElement("li");
+                li.innerHTML = `
+                    <a href="/client/${c}">
+                        <span>👤 ${c}</span>
+                        <span class="badge">Registado</span>
+                    </a>
+                `;
+                ul.appendChild(li);
+            });
+        }
+    }
+}
+
+// Carregar estatísticas
+async function carregarStats() {
+    const d = await get("/stats");
+    
+    if (d) {
+        document.getElementById("stat-clients").textContent = d.total_clients || 0;
+        document.getElementById("stat-sessions").textContent = d.active_sessions || 0;
+        document.getElementById("stat-messages").textContent = d.messages_in_transit || 0;
+        document.getElementById("stat-intercepted").textContent = d.intercepted_messages || 0;
+    }
+}
+
+// Atualizar a cada 5 segundos
+setInterval(() => {
+    carregar();
+    carregarStats();
+}, 5000);
+
+// Carregar ao iniciar
+carregar();
+carregarStats();
+
+// Enter para criar
+document.getElementById("cid").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        criar();
+    }
+});
+</script>
+
+</body>
+</html>
