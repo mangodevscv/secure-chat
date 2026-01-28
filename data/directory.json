@@ -2,5 +2,13 @@
   "artur_pina": {
     "public_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEtRjjZhL6rTdOofRH+HJwnIsF6iMN\nbnAEVxkLTnp2DyaEHR1uEMoJwirhx+Oid+jBF+UZjRgI5u4YHKPfsjZ1bg==\n-----END PUBLIC KEY-----\n",
     "registered_at": "2026-01-16T16:54:50.302976"
+  },
+  "Anisia_Lima": {
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6KD3Fm+xfuwCHySX7nzejHaJg0jc\n9KzN4QK3IkwdBsA8a56eX8PevuRCa/dLMJKTusq0ka9sKVu65E8rhexHkA==\n-----END PUBLIC KEY-----\n",
+    "registered_at": "2026-01-28T23:25:49.221858"
+  },
+  "Victor_Semedo": {
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/CsJenxQeNGB42EpkDJxtoxXJ9z5\n2h47+F/mczuv1yUOnMzqHu1unySZpKMNTko69mkcvZ5WcAqb1vP6u1bdZg==\n-----END PUBLIC KEY-----\n",
+    "registered_at": "2026-01-28T23:26:50.779922"
   }
 }
